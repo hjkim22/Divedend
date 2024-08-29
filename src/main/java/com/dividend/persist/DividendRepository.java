@@ -1,4 +1,4 @@
-package com.dividend;
+package com.dividend.persist;
 
 import com.dividend.persist.entity.DividendEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
