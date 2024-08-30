@@ -1,7 +1,6 @@
 package com.dividend.web;
 
 import com.dividend.model.Auth;
-import com.dividend.model.MemberEntity;
 import com.dividend.security.TokenProvider;
 import com.dividend.service.MemberService;
 import lombok.RequiredArgsConstructor;

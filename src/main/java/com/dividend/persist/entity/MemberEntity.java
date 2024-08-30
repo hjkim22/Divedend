@@ -1,4 +1,4 @@
-package com.dividend.model;
+package com.dividend.persist.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,7 +38,7 @@ public class MemberEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return this.username;
     }
 
     @Override

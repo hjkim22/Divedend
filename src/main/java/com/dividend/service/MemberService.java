@@ -1,7 +1,7 @@
 package com.dividend.service;
 
 import com.dividend.model.Auth;
-import com.dividend.model.MemberEntity;
+import com.dividend.persist.entity.MemberEntity;
 import com.dividend.persist.MemberRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +26,8 @@ public class MemberService implements UserDetailsService {
     }
 
     public MemberEntity register(Auth.SignUp member) {
+//        log.info("Registering user with username: {}", member.getUsername());
+
         boolean exists = this.memberRepository.existsByUsername(member.getUsername());
         if (exists) {
             throw new RuntimeException("username already exists");
