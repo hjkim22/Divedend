@@ -52,7 +52,7 @@ public class CompanyService {
 
         // 스크래핑 결과
         CompanyEntity companyEntity = this.companyRepository.save(new CompanyEntity(company));
-        List<DividendEntity> dividendEntities = scrapedResult.getDividendEntities().stream()
+        List<DividendEntity> dividendEntities = scrapedResult.getDividends().stream()
                 .map(e -> new DividendEntity(companyEntity.getId(), e))
                 .collect(Collectors.toList());
 
