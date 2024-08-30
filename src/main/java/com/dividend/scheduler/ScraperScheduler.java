@@ -30,17 +30,6 @@ public class ScraperScheduler {
 
     private final Scraper yahooFinanceScraper;
 
-    @Scheduled(fixedDelay = 1000)
-    public void test1() throws InterruptedException {
-        Thread.sleep(10000);
-        System.out.println(Thread.currentThread().getName() + " -> test1 : " + LocalDateTime.now());
-    }
-
-    @Scheduled(fixedDelay = 1000)
-    public void test2() {
-        System.out.println(Thread.currentThread().getName() + " -> test2 : " + LocalDateTime.now());
-    }
-
     // 일정 주기마다 수행
     @CacheEvict(value = KEY_FINANCE, allEntries = true)
     @Scheduled(cron = "${scheduler.scrap.yahoo}") // 매일 정각
