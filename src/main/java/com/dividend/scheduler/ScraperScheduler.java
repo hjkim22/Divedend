@@ -9,14 +9,19 @@ import com.dividend.persist.entity.DividendEntity;
 import com.dividend.scraper.Scraper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.dividend.model.constants.CacheKey.KEY_FINANCE;
+
 @Slf4j
 @Component
+@EnableScheduling
 @AllArgsConstructor
 public class ScraperScheduler {
 
@@ -37,9 +42,10 @@ public class ScraperScheduler {
     }
 
     // 일정 주기마다 수행
-//    @Scheduled(cron = "${scheduler.scrap.yahoo}") // 매일 정각
+    @CacheEvict(value = KEY_FINANCE, allEntries = true)
+    @Scheduled(cron = "${scheduler.scrap.yahoo}") // 매일 정각
     public void yahooFinanceScheduler() {
-//        log.info("scraping scheduler is started");
+        log.info("scraping scheduler is started");
 
         // 저장된 회사 목록을 조회
         List<CompanyEntity> companies = this.companyRepository.findAll();
@@ -48,10 +54,8 @@ public class ScraperScheduler {
         for (var company : companies) {
             log.info("scraping scheduler is started -> " + company.getName());
 
-            ScrapedResult scrapedResult = this.yahooFinanceScraper.scrap(Company.builder()
-                    .name(company.getName())
-                    .ticker(company.getTicker())
-                    .build());
+            ScrapedResult scrapedResult = this.yahooFinanceScraper.scrap(
+                    new Company(company.getName(), company.getTicker()));
 
             // 스크래핑한 배당금 정보 중 데이터베이스에 없는 값은 저장
             scrapedResult.getDividends().stream()
@@ -59,7 +63,8 @@ public class ScraperScheduler {
                     .map(e -> new DividendEntity(company.getId(), e))
                     // 엘리먼트를 하나씩 디비든 레퍼지토리에 삽입
                     .forEach(e -> {
-                        boolean exists = this.dividendRepository.existsByCompanyIdAndDate(e.getCompanyId(), e.getDate());
+                        boolean exists = this.dividendRepository.existsByCompanyIdAndDate(
+                                e.getCompanyId(), e.getDate());
                         if (!exists) {
                             this.dividendRepository.save(e);
                         }
