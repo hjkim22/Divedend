@@ -1,5 +1,6 @@
 package com.dividend.service;
 
+import com.dividend.exception.impl.NoCompanyException;
 import com.dividend.model.Company;
 import com.dividend.model.ScrapedResult;
 import com.dividend.persist.CompanyRepository;
@@ -86,7 +87,7 @@ public class CompanyService {
 
     public String deleteCompany(String ticker) {
         var company = this.companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("The company does not exist."));
+                .orElseThrow(() -> new NoCompanyException());
 
         this.dividendRepository.deleteAllByCompanyId(company.getId());
         this.companyRepository.delete(company);
